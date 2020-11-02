@@ -50,13 +50,13 @@
 ;; from an inputted list
 ;; Example: (lis '(1 2) --> (() (1) (2) (1 2))
 ;; Definition:
-(define (lis_slow lst)
+(define (lis lst)
   (define all-sublists (sublists lst))
   (define lststore '())
   (iterate (cdr all-sublists) 0 lststore)
   )
   
-;(lis_slow '(1 2 3 4 1 2 3 4))
+;(lis '(1 2 3 4 1 2 3 4))
 
 
 
