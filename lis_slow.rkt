@@ -1,4 +1,4 @@
-;; Contract: sublists: list -> list(all possible sublists)
+;; Contract: sublists: lst -> list(all possible sublists)
 ;; Purpose: to compute all sublists of a given list
 ;; Example: (sublists '(1 2) --> (() (1) (2) (1 2))
 ;; Definition:
@@ -11,10 +11,9 @@
       )
   )
 
-;; Contract: lis: list -> longest non-decreasing subsequence
-;; Purpose: to compute the longest non-decreasing subsequence
-;; from an inputted list
-;; Example: (lis '(1 2) --> (() (1) (2) (1 2))
+;; Contract: increasing: lst -> #t / #f if it is an increasing subsequence
+;; Purpose: to compute if the input is an increasing array
+;; Example: (increasing '(1 2)) --> #t
 ;; Definition:
 (define (increasing lst)
       (cond ((null? lst) #f)
@@ -24,16 +23,23 @@
             (else #f))
      )
 
+;; Contract: determineTrue: lst maxlen lststore --> longest increasing subsequence
+;; Purpose: Used as a helper function for 'iterate' for definition and conditin statements
+;; Example: (determineTrue '((1) (1 2 3) (1 2)))) --> (1 2 3)
+;; Definition:
 (define (determineTrue lst maxlen lststore)
-  ;(display (car lst)) (newline)
   (define nmaxlen (length (car lst)))
   (define nlststore (car lst))
   (cond ((and (>= (length(car lst)) maxlen) (increasing (car lst))) (iterate (cdr lst) nmaxlen nlststore))
         (else (iterate (cdr lst) maxlen lststore)))
   )
 
+;; Contract: iterate: lst maxlen lststore --> longest increasing subsequence
+;; Purpose: To compute the longest increasing subsequence of a passed set of
+;; sublists. I.e., which sublist is the longest increasing subsequence?
+;; Example: (iterate '((1) (1 2 3) (1 2)))) --> (1 2 3)
+;; Definition: 
 (define (iterate lst maxlen lststore)
-  ;(display maxlen) (newline)
   (if (not(null? lst)) (determineTrue lst maxlen lststore))
   (if (null? lst) (display lststore))
   )
@@ -50,9 +56,7 @@
   (iterate (cdr all-sublists) 0 lststore)
   )
   
-  
- 
-(lis '(1 2 2 4 4))
+;(lis '(1 2 3 4 1 2 3 4))
 
 
 

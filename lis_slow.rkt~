@@ -1,25 +1,56 @@
-(define (lis less? lst)
-  (define pile-tops (make-vector (length lst)))
-  (define (bsearch-piles x len)
-    (let aux ((lo 0)
-	      (hi (- len 1)))
-      (if (> lo hi)
-	  lo
-	  (let ((mid (quotient (+ lo hi) 2)))
-	    (if (less? (car (vector-ref pile-tops mid)) x)
-		(aux (+ mid 1) hi)
-		(aux lo (- mid 1)))))))
-  (let aux ((len 0)
-	    (lst lst))
-    (if (null? lst)
-	(reverse (vector-ref pile-tops (- len 1)))
-	(let* ((x (car lst))
-	       (i (bsearch-piles x len)))
-	  (vector-set! pile-tops i (cons x (if (= i 0)
-					       '()
-					       (vector-ref pile-tops (- i 1)))))
-	  (aux (if (= i len) (+ len 1) len) (cdr lst))))))
+;; Contract: sublists: list -> list(all possible sublists)
+;; Purpose: to compute all sublists of a given list
+;; Example: (sublists '(1 2) --> (() (1) (2) (1 2))
+;; Definition:
+(define (sublists lst)
+  (if (null? lst)
+      (list '())
+      (let*
+        ((remainder (sublists (cdr lst))))  
+        (append remainder (map (lambda (x) (cons (car lst) x)) remainder)))
+      )
+  )
+
+;; Contract: increasing: list -> #t / #f if it is an increasing subsequence
+;; Purpose: to compute if the input is an increasing array
+;; Example: (lis '(1 2) --> (() (1) (2) (1 2))
+;; Definition:
+(define (increasing lst)
+      (cond ((null? lst) #f)
+            ((= (length lst) 1) #t)
+            ((>= (car (cdr lst)) (car lst))
+             (increasing (cdr lst)))
+            (else #f))
+     )
+
+(define (determineTrue lst maxlen lststore)
+  (define nmaxlen (length (car lst)))
+  (define nlststore (car lst))
+  (cond ((and (>= (length(car lst)) maxlen) (increasing (car lst))) (iterate (cdr lst) nmaxlen nlststore))
+        (else (iterate (cdr lst) maxlen lststore)))
+  )
+
+(define (iterate lst maxlen lststore)
+  (if (not(null? lst)) (determineTrue lst maxlen lststore))
+  (if (null? lst) (display lststore))
+  )
  
-(display (lis <= '(3 2 6 4 5 1))) (newline)
-(display (lis <= '(0 8 4 12 2 2 2 2 10 6 14 1 9 5 13 3 11 7 15))) (newline)
-(display (lis <= '(1 2 3 4 1 2 3 4))) (newline)
+
+;; Contract: lis: list -> longest non-decreasing subsequence
+;; Purpose: to compute the longest non-decreasing subsequence
+;; from an inputted list
+;; Example: (lis '(1 2) --> (() (1) (2) (1 2))
+;; Definition:
+(define (lis lst)
+  (define all-sublists (sublists lst))
+  (define lststore '())
+  (iterate (cdr all-sublists) 0 lststore)
+  )
+  
+  
+ 
+(lis '(1 2 3 4 1 2 3 4))
+
+
+
+
