@@ -1,6 +1,6 @@
 ;; Contract: sublists: lst -> list(all possible sublists)
 ;; Purpose: to compute all sublists of a given list
-;; Example: (sublists '(1 2) --> (() (1) (2) (1 2))
+;; Example: (sublists '(1 2)) --> (() (1) (2) (1 2))
 ;; Definition:
 (define (sublists lst)
   (if (null? lst)
@@ -45,10 +45,10 @@
   )
  
 
-;; Contract: lis: list -> longest non-decreasing subsequence
+;; Contract: lis_slow: list -> longest non-decreasing subsequence
 ;; Purpose: to compute the longest non-decreasing subsequence
 ;; from an inputted list
-;; Example: (lis '(1 2) --> (() (1) (2) (1 2))
+;; Example: (lis '(1 2 4 3)) --> (1 2 4)
 ;; Definition:
 (define (lis_slow lst)
   (define all-sublists (sublists lst))
@@ -56,7 +56,7 @@
   (iterate (cdr all-sublists) 0 lststore)
   )
   
-;(lis_slow '(1 2 3 4 1 2 3 4))
+(lis_slow '(1 2 3 2 4 1 2))
 
 
 
