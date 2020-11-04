@@ -2,7 +2,7 @@
 ;; Contract: create_initial: list dynamic -> a list of 1's
 ;; Purpose: to compute a list of ones of the same length as lst
 ;; from an inputted list.
-;; Example: (lis '(1 2)) --> (1 1)
+;; Example: (create_initial '(1 2)) --> (1 1)
 ;; Definition:
 (define (create_initial lst dynamic)
     (if (null? lst)
@@ -12,12 +12,6 @@
         (append ndynamic '(1)))
       )
   )
-
-(define (numberToList number)
-   (if (< number 10) (list number)
-       (append (numberToList (quotient number 10))
-               (list (- number (* 10 (quotient number 10)))))))
-
 
 ;; Contract: myLet: list add index -> a list with value inserted at i
 ;; Purpose: to swap an element in the list witout using set!
@@ -29,34 +23,64 @@
          (rev_lst (reverse lst))
          (rev_tail (list-tail rev_lst (- (length lst) i)))
          (first_vals (reverse rev_tail))
-         (ret (append first_vals (numberToList val)))
+         (ret (append first_vals (list val)))
          )
     (append ret tail)  
     )
   )
 
+;; lessThanJ: i j list(t) list(og) -> longest non decreasing subsequence
+;; Purpose: to determine if og[j] > og[i], and change the t list accordingly
+;; by adding the t[i] value to the t[j] value
+;; Example: 
+;; Definition:
 
-;; Contract: recurse: i j list(t) list(t) -> longest non-decreasing subsequence
+(define (lessThanJ i j t og)
+  (define (changeT i j t og)
+    (define iTval (list-ref t i))
+    (define jTval (list-ref t j))
+    (define njTVal (+ iTval jTval ))
+    (define nTlist (myLet t njTVal j))
+    (recurse (+ i 1) j nTlist og)
+   )
+  (define iOGval (list-ref og i))
+  (define jOGval (list-ref og j))
+  (if (>= jOGval iOGval)
+      (changeT i j t og)
+      ((recurse (+ i 1) j t og))
+      )
+  )
+
+(define (rev lststore)
+  (define lst (reverse lststore))
+  (reverse lst)
+  )
+
+;; Contract: recurse: i j list(t) list(og) -> longest non-decreasing subsequence
 ;; Purpose: to compute the longest non-decreasing subsequence dynamically
 ;; from an inputted list for each possible adj subsequence.
-;; Example: (lis '(1 2)) --> (() (1) (2) (1 2))
+;; Example: 
 ;; Definition:
 (define (recurse i j t og)
-  #t
+  (cond ((= i (length og)) (rev t))
+        ((= i j) (recurse 0 (+ j 1) t og))
+        (else (lessThanJ i j t og)))
+  
   )
 
 ;; Contract: lis_fast: list -> longest non-decreasing subsequence in polynomial tim
 ;; Purpose: to compute the longest non-decreasing subsequence dynamically
 ;; from an inputted list
-;; Example: (lis '(1 2 4 3)) --> (1 2 4)
+;; Example: (lis_fast '(1 2 4 3)) --> (1 2 4)
 ;; Definition:
 (define (lis_fast lst)
   (let* (
           (tmp (create_initial (cdr lst) '()))
-          (i (car tmp))
-          (j (car (cdr tmp)))
+          (i 0)
+          (j 1)
+          (value_list (recurse i j tmp lst))
           )
-    (recurse i j tmp tmp)
+        
     )
   )
 
@@ -66,4 +90,4 @@
 
 ;(substring "Racecar" 0 3)
 ;(list-tail '(1 2 3 4 5) 2)
-(myLet '(1 2 3 8 7 9) 5 5)
+(myLet '(1 2 3 8 7 9) 100 5)

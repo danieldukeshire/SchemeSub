@@ -34,14 +34,19 @@
         (else (iterate (cdr lst) maxlen lststore)))
   )
 
+(define (rev lststore)
+   (define lst (reverse lststore))
+   (reverse lst)
+   )
+
 ;; Contract: iterate: lst maxlen lststore --> longest increasing subsequence
 ;; Purpose: To compute the longest increasing subsequence of a passed set of
 ;; sublists. I.e., which sublist is the longest increasing subsequence?
 ;; Example: (iterate '((1) (1 2 3) (1 2)))) --> (1 2 3)
 ;; Definition: 
 (define (iterate lst maxlen lststore)
-  (if (not(null? lst)) (determineTrue lst maxlen lststore))
-  (if (null? lst) (display lststore))
+  (if (not(null? lst)) (determineTrue lst maxlen lststore) (rev lststore))
+ 
   )
  
 
